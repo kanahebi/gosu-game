@@ -8,6 +8,7 @@ class Tutorial < Gosu::Window
     self.caption = "Tutorial Game"
 
     @background_image = Gosu::Image.new("image/background.png", :tileable => true)
+    @font = Gosu::Font.new(20)
 
     @player = Player.new
     @player.warp(320, 390)
@@ -31,12 +32,14 @@ class Tutorial < Gosu::Window
       @player.ring
     end
     @stars.each{|star| star.drop}
+    @player.collect_stars(@stars)
   end
 
   def draw
     @player.draw
     @stars.each{|star| star.draw}
     @background_image.draw(0, 0, 0)
+    @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 
   def button_down(id)
