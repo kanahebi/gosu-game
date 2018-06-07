@@ -33,21 +33,22 @@ class Tutorial < Gosu::Window
   end
 
   def update
-    if Gosu.button_down? Gosu::KB_LEFT or Gosu::button_down? Gosu::GP_LEFT
-      @player.move_left
-    end
-    if Gosu.button_down? Gosu::KB_RIGHT or Gosu::button_down? Gosu::GP_RIGHT
-      @player.move_right
-    end
-    @stars.each{|star| star.drop}
-    @bombs.each{|bomb| bomb.drop}
-    @player.collect_stars(@stars)
-    if @gameover
+    unless @gameover
+      if Gosu.button_down? Gosu::KB_LEFT or Gosu::button_down? Gosu::GP_LEFT
+        @player.move_left
+      end
+  	   if Gosu.button_down? Gosu::KB_RIGHT or Gosu::button_down? Gosu::GP_RIGHT
+        @player.move_right
+      end
+      @stars.each{|star| star.drop}
+      @bombs.each{|bomb| bomb.drop}
+      @player.collect_stars(@stars)
+      if @player.hit_bombs?(@bombs)
+        @gameover = true
+      end
+    else 
       sleep 2
       close
-    end
-    if @player.hit_bombs?(@bombs)
-      @gameover = true
     end
   end
 
