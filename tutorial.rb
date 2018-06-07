@@ -2,6 +2,10 @@ require "gosu"
 require "./player"
 require "./star"
 
+module ZOrder
+    BACKGROUND, STARS, PLAYER, UI = *0..3
+end
+
 class Tutorial < Gosu::Window
   def initialize
     super 640, 480

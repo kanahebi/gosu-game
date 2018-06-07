@@ -1,4 +1,6 @@
 class Player
+  attr_reader :x, :y, :score
+
   def initialize
     @image = Gosu::Image.new("image/kanahebi.png")
     @beep = Gosu::Sample.new("sound/ring.wav")
@@ -31,14 +33,11 @@ class Player
   end
 
   def collect_stars(stars)
-    stars.reject! do |star|
-      if Gosu.distance(@x, @y, star.x, star.y) < 35
+    stars.each do |star|
+      if Gosu.distance(@x, @y, star.x, star.y) < 60
         @score += 10
         @beep.play
         star.reset
-        true
-      else
-        false
       end
     end
   end
