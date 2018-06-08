@@ -13,9 +13,12 @@ class Tutorial < Gosu::Window
     self.caption = "Tutorial Game"
 
     @background_image = Gosu::Image.new("image/background.png", :tileable => true)
-    @gameover_image = Gosu::Image.new("image/gameover.png", :tileable => true)
+    @gameover_image   = Gosu::Image.new("image/gameover.png", :tileable => true)
+    @gameclear_image  = Gosu::Image.new("image/gameclear.png", :tileable => true)
+    @clear_beep = Gosu::Sample.new("sound/clear.wav")
     @font = Gosu::Font.new(20)
     @gameover = false
+    @gameclear = false
 
     @player = Player.new
     @player.warp(320, 390)
@@ -33,7 +36,7 @@ class Tutorial < Gosu::Window
   end
 
   def update
-    unless @gameover
+    unless @gameover || @gameclear
       if Gosu.button_down? Gosu::KB_LEFT or Gosu::button_down? Gosu::GP_LEFT
         @player.move_left
       end
@@ -46,23 +49,32 @@ class Tutorial < Gosu::Window
       if @player.hit_bombs?(@bombs)
         @gameover = true
       end
-    else 
+      if @player.score > 100
+        @gameclear = true
+        @clear_beep.play
+      end
+    else
       sleep 2
       close
     end
   end
 
   def draw
-    unless @gameover
+    unless @gameover || @gameclear
       @player.draw
       @stars.each{|star| star.draw}
       @bombs.each{|bomb| bomb.draw}
       @background_image.draw(0, 0, 0)
       @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     else
-      sleep 1
-      @gameover_image.draw(0,0,0)
-      @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+      if @gameover
+        sleep 1
+        @gameover_image.draw(0,0,0)
+        @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+      else
+        @gameclear_image.draw(0,0,0)
+        @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+      end
     end
   end
 
